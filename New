@@ -1,0 +1,59 @@
+public class Graph {
+    private final int numVertices;
+    private final int[][] adjMatrix;
+
+    public Graph(int numVertices) {
+        this.numVertices = numVertices;
+        this.adjMatrix = new int[numVertices][numVertices];
+    }
+
+    public void addEdge(int source, int dest) {
+        adjMatrix[source][dest] = 1;
+    }
+
+    private boolean isCyclicUtil(int vertex, boolean[] visited, boolean[] stack) {
+        if (stack[vertex]) {
+            return true;
+        }
+
+        if (visited[vertex]) {
+            return false;
+        }
+
+        visited[vertex] = true;
+        stack[vertex] = true;
+
+        for (int i = 0; i < numVertices; i++) {
+            if (adjMatrix[vertex][i] == 1) {
+                if (isCyclicUtil(i, visited, stack)) {
+                    return true;
+                }
+            }
+        }
+
+        stack[vertex] = false;
+
+        return false;
+    }
+
+    public boolean isCyclic() {
+        boolean[] visited = new boolean[numVertices];
+        boolean[] stack = new boolean[numVertices];
+
+        for (int i = 0; i < numVertices; i++) {
+            if (isCyclicUtil(i, visited, stack)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static void main(String[] args) {
+        Graph graph = new Graph(4);
+        graph.addEdge(0, 1);
+        graph.addEdge(1, 2);
+        graph.addEdge(2, 0);
+        System.out.println(graph.isCyclic() ? "Graph contains cycle" : "Graph doesn't contain cycle");
+    }
+}
